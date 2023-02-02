@@ -1,0 +1,30 @@
+- name: PUT PSIM214
+  hosts: localhost
+  tasks:
+   - name: Find out what the remote machine's mounts are
+     ansible.builtin.slurp:
+       src: /home/tqhuy/ansibleplaybook/commitdevice/put_psim214
+     register: put_psim214_content
+   - name: Put PSIM214
+     ansible.builtin.shell:
+       cmd: "{{ put_psim214_content['content'] | b64decode }}"
+     register: put_psim214
+   
+  #  - name: Build Build sal-netconf-connector DEBUG
+  #    ansible.builtin.debug:
+  #      var: mvn_result.stdout
+
+- name: POST PSIM100G
+  hosts: localhost
+  tasks:
+   - name: Find out what the remote machine's mounts are
+     ansible.builtin.slurp:
+      src: /home/tqhuy/ansibleplaybook/commitdevice/post_psim100G
+     register: post_psim100G_content
+   - name: Pause before start
+     ansible.builtin.pause:
+       seconds: 4
+   - name: POST PSIM100G
+     ansible.builtin.shell:
+       cmd: "{{ post_psim100G_content['content'] | b64decode }}"
+     register: post_psim100G

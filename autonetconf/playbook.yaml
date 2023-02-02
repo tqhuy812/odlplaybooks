@@ -1,0 +1,62 @@
+- name: OPENDAYLIGHT NETCONF
+  hosts: localhost
+  tasks:
+   - name: Build sal-netconf-connector
+     ansible.builtin.shell:
+       cmd: mvn -Pq clean install -DproxyHost=defra1c-proxy.emea.nsn-net.net -DproxySet=true -DproxyPort=8080
+       chdir: /home/tqhuy/opendaylight/netconf/netconf/sal-netconf-connector
+     register: mvn_result_netconf
+   
+  #  - name: Build Build sal-netconf-connector DEBUG
+  #    ansible.builtin.debug:
+  #      var: mvn_result_netconf.stdout
+
+- name: CHECK TPCE STATUS
+  hosts: localhost
+  tasks:
+   - name: Check tpce/karaf/status
+     ansible.builtin.shell:
+       cmd: ./status
+       chdir: /home/tqhuy/tpce-oc-tapi24/karaf/target/assembly/bin/
+     register: mvn_result_status
+     ignore_errors: true
+
+- name: STOP TPCE
+  hosts: localhost
+  tasks:
+   - name: Stop tpce/karaf/stop
+     ansible.builtin.shell:
+       cmd: ./stop
+       chdir: /home/tqhuy/tpce-oc-tapi24/karaf/target/assembly/bin/
+     when: mvn_result_status.stdout != "Not Running ..."
+     register: mvn_result_stop
+
+# - name: TPCE OCRENDERER
+#   hosts: localhost
+#   tasks:
+#    - name: Build tpce/ocrenderer
+#      ansible.builtin.shell:
+#        cmd: mvn -Pq clean install -DproxyHost=defra1c-proxy.emea.nsn-net.net -DproxySet=true -DproxyPort=8080
+#        chdir: /home/tqhuy/tpce-oc-tapi24/ocrenderer
+#      register: mvn_result_ocrenderer
+
+- name: TPCE KARAF
+  hosts: localhost
+  tasks:
+   - name: Build tpce/karaf
+     ansible.builtin.shell:
+       cmd: mvn -Pq clean install -DproxyHost=defra1c-proxy.emea.nsn-net.net -DproxySet=true -DproxyPort=8080
+       chdir: /home/tqhuy/tpce-oc-tapi24/karaf
+     register: mvn_result_karaf
+
+- name: START TPCE CLIENT
+  hosts: localhost
+  tasks:
+   - name: Pause before start
+     ansible.builtin.pause:
+       seconds: 2
+   - name: Start tpce/karaf/start
+     ansible.builtin.shell:
+       cmd: ./start
+       chdir: /home/tqhuy/tpce-oc-tapi24/karaf/target/assembly/bin/
+     register: mvn_result_start

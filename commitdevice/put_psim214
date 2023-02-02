@@ -1,0 +1,15 @@
+printf '{
+    "node": [
+        {
+            "node-id": "PSIM214",
+            "netconf-node-topology:username": "admin",
+            "netconf-node-topology:password": "admin",
+            "netconf-node-topology:host": "135.238.196.214",
+            "netconf-node-topology:port": "830",
+            "netconf-node-topology:tcp-only": "false",
+            "netconf-node-topology:pass-through": {}
+        }
+    ]
+}'| http  --follow --timeout 3600 PUT 'http://localhost:8181/restconf/config/network-topology:network-topology/topology/topology-netconf/node/PSIM214' \
+ Content-Type:'application/json' \
+ Authorization:'Basic YWRtaW46YWRtaW4='

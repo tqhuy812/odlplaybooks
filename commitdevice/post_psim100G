@@ -1,0 +1,7 @@
+printf '{
+    "input": {
+        "node-id": "PSIM214" 
+    }
+}'| http  --follow --timeout 3600 POST 'http://localhost:8181/restconf/operations/transportpce-device-ocrenderer:psim-100g-client-line-creation' \
+ Authorization:'Basic YWRtaW46YWRtaW4=' \
+ Content-Type:'application/json'
